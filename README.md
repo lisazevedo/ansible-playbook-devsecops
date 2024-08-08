@@ -81,7 +81,7 @@ These packages are installed automatically by the playbook, but ensure your targ
    This command executes all tasks defined in the playbook. However, if you want to run specific parts of the playbook, you can use tags to control which tasks are executed.
 
 ### Tags
-
+Here’s a more detailed explanation about using tags in your Ansible playbook and how to run the playbook with specific tags.
 Tags allow you to selectively run tasks based on their tags. In this playbook, there are two main tags defined: `install` and `cleanup`.
 
 - **Install Tasks:**
@@ -108,6 +108,3 @@ Tags allow you to selectively run tasks based on their tags. In this playbook, t
 
 **GPG Verification:**
    Currently, GPG verification is commented out due to issues with finding the public key and signature files. Implementing GPG verification will enhance security by ensuring the authenticity of the installation script. Update URLs for public keys and signatures as necessary.
-
-
-Here’s a more detailed explanation about using tags in your Ansible playbook and how to run the playbook with specific tags.
