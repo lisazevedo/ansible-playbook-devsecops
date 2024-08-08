@@ -1,0 +1,36 @@
+---
+
+- name: (INSTALL) Install dependecies
+  apt:
+    name:
+      - apt-transport-https
+      - curl
+      - software-properties-common
+      - gnupg
+    state: present
+
+- name: (INSTALL) Download k3s install script
+  get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s_install.sh
+    mode: '0755'
+
+- name: (INSTALL) Run k3s install script
+  command: sh /tmp/k3s_install.sh
+  register: k3s_install_result
+  failed_when: k3s_install_result.rc != 0
+
+
+- name: (INSTALL) Verify service status
+  systemd:
+    name: k3s
+    state: started
+  register: service_status
+
+- name: (INSTALL) Verify if service is running
+  assert:
+    that:
+      - service_status.status.ActiveState == "active"
+    fail_msg: "The service is not active!"
+    success_msg: "The service is active and running correctly."
+    

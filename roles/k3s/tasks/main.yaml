@@ -1,0 +1,8 @@
+---
+- name: Install k3s
+  import_tasks: install.yaml
+  tags: install
+
+- name: Cleanup k3s
+  import_tasks: cleanup.yaml
+  tags: cleanup
