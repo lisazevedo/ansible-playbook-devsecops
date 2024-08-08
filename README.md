@@ -31,25 +31,6 @@ These packages are installed automatically by the playbook, but ensure your targ
 - `playbook.yaml`: Playbook file that includes the `k3s` role.
 - `ansible.cfg`: Ansible configuration file.
 
-## Installation and Usage
-
-1. **Clone the Repository:**
-
-   ```bash
-   git clone <repository_url>
-   cd <repository_directory>
-   ```
-
-2. **Update Inventory File:**
-
-   Edit the `hosts` file to specify your target hosts and SSH key path.
-
-3. **Run the Playbook:**
-
-   ```bash
-   ansible-playbook playbook.yaml
-   ```
-
 ## Playbook Breakdown
 
 ### Roles
@@ -76,14 +57,13 @@ These packages are installed automatically by the playbook, but ensure your targ
 - **Check and Remove k3s:**
   Checks if the uninstall script exists and removes k3s if present.
 
-
 ## Installation and Usage
 
 1. **Clone the Repository:**
 
    ```bash
-   git clone <repository_url>
-   cd <repository_directory>
+   git clone https://github.com/lisazevedo/ansible-playbook-devsecops.git
+   cd ansible-playbook-devsecops
    ```
 
 2. **Update Inventory File:**
