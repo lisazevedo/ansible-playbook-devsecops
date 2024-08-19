@@ -1,5 +1,9 @@
 ---
 - name: k3s install and configure
   hosts: dev
+  vars:
+    cert_path: "/tmp/certs"
+    domain_name: "mylocaldomain.local" 
   roles:
+    - hosts
     - k3s

@@ -1,0 +1,20 @@
+---
+- name: (CLEANUP) Configure DNS local dynamically
+  become: True
+  blockinfile:
+    path: /etc/hosts
+    state: absent
+    block: |
+      {% for host in groups['dev'] %}
+      {{ hostvars[host]['ansible_host'] }} {{ host }}
+      {% endfor %}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+
+- name: (CLEANUP) Remove TLS certificate files
+  file:
+    path: "{{ cert_path }}"
+    state: absent
+  loop:
+    - "{{ domain_name }}.key"
+    - "{{ domain_name }}.csr"
+    - "{{ domain_name }}.crt"

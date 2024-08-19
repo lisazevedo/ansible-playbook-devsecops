@@ -1,0 +1,8 @@
+---
+- name: Configure hosts
+  import_tasks: install.yaml
+  tags: install
+
+- name: Cleanup hosts configuration
+  import_tasks: cleanup.yaml
+  tags: cleanup
