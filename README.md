@@ -24,18 +24,48 @@ These packages are installed automatically by the playbook, but ensure your targ
 
 ## Directory Structure
 
+```
+k3s-ansible-role/
+├── roles/
+│   ├── hosts/
+│   │   ├── tasks/
+│   │   │   ├── cleanup.yaml
+│   │   │   ├── install.yaml
+│   │   │   └── main.yaml
+│   │   └── files/
+│   │       └── config.yaml
+│   └── k3s/
+│       ├── tasks/
+│       │   ├── cleanup.yaml
+│       │   ├── install.yaml
+│       │   └── main.yaml
+│       └── files/
+│           └── config.yaml
+├── hosts
+├── playbook.yaml
+├── ansible.cfg
+├── requirements.yaml
+└── README.md
+
+```
+
 - `roles/k3s/tasks/main.yaml`: Main task file that includes the `install` and `cleanup` tasks.
 - `roles/k3s/tasks/install.yaml`: Contains tasks for installing k3s, including dependencies, running the installation script, and verifying the service.
 - `roles/k3s/tasks/cleanup.yaml`: Contains tasks for cleaning up after the k3s installation, including removing dependencies and uninstalling k3s.
+- `roles/hosts/tasks/main.yaml`: Main task file that includes the `install` and `cleanup` tasks.
+- `roles/hosts/tasks/install.yaml`: Contains tasks for configure hosts, including dependencies, running the installation script, and verifying the service.
+- `roles/hosts/tasks/cleanup.yaml`: Contains tasks for cleaning up after the hosts configuration, including removing dependencies and configurations.
 - `hosts`: Inventory file specifying host details.
-- `playbook.yaml`: Playbook file that includes the `k3s` role.
+- `playbook.yaml`: Playbook file that includes the `k3s` and `hosts` roles.
 - `ansible.cfg`: Ansible configuration file.
+- `requirements.yaml`: Ansible requirements file.
 
 ## Playbook Breakdown
 
 ### Roles
 
 - **k3s**: Includes tasks for installing and cleaning up k3s.
+- **hosts**: Includes tasks for configuring and cleaning up hosts.
 
 ### Tasks
 
@@ -69,8 +99,14 @@ These packages are installed automatically by the playbook, but ensure your targ
 2. **Update Inventory File:**
 
    Edit the `hosts` file to specify your target hosts and SSH key path.
+3. **Install Requirements**
 
-3. **Run the Playbook:**
+    You can install the requirements with the following command:
+
+    ```bash
+      ansible-galaxy collection install -r requirements.yaml
+    ```
+4. **Run the Playbook:**
 
    You can run the entire playbook with the following command:
 
