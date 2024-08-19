@@ -1,10 +1,12 @@
-- name: (CLEANUP) Remove dependecies
+---
+- name: (CLEANUP) Remove dependencies
   apt:
     name:
       - apt-transport-https
       - curl
       - software-properties-common
     state: absent
+
 - name: (CLEANUP) Check if k3s-uninstall.sh script exists
   stat:
     path: /usr/local/bin/k3s-uninstall.sh
@@ -13,7 +15,7 @@
 - name: (CLEANUP) Remove k3s if the uninstall script exists
   shell: /usr/local/bin/k3s-uninstall.sh
   when: k3s_uninstall_script.stat.exists
-  ignore_errors: true
+  ignore_errors: yes
   register: uninstall_result
 
 - name: (CLEANUP) Display a message if the uninstall script does not exist
@@ -26,27 +28,23 @@
     var: uninstall_result
   when: k3s_uninstall_script.stat.exists
 
-- name: (CLEANUP) Remove k3s
-  command: /usr/local/bin/k3s-uninstall.sh
-  when: k3s_uninstall_script.stat.exists
-
-- name: (CLEANUP) CHeck service status
+- name: (CLEANUP) Check service status
   command: systemctl list-units --type=service --all | grep -q "k3s.service"
   register: service_exists
   ignore_errors: yes
 
-- name: (CLEANUP) Check service status if service exists
+- name: (CLEANUP) Ensure k3s service is stopped
   systemd:
     name: k3s
-    state: started
+    state: stopped
   when: service_exists.rc == 0
-  register: service_status
   ignore_errors: yes
+  register: service_status
 
-- name: (CLEANUP) Check if service is active
+- name: (CLEANUP) Check if service is stopped
   assert:
     that:
-      - service_exists.rc != 0 or service_status.status.ActiveState == "active"
-    fail_msg: "The service is active and running"
-    success_msg: "The service isn't active or no exist"
+      - service_exists.rc != 0 or service_status.status.ActiveState == "inactive"
+    fail_msg: "The service is still active!"
+    success_msg: "The service is inactive or does not exist"
   ignore_errors: yes

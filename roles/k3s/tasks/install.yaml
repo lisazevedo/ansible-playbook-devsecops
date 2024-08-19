@@ -1,6 +1,5 @@
 ---
-
-- name: (INSTALL) Install dependecies
+- name: (INSTALL) Install dependencies
   apt:
     name:
       - apt-transport-https
@@ -13,13 +12,12 @@
   get_url:
     url: https://get.k3s.io
     dest: /tmp/k3s_install.sh
-    mode: '0755'
+    mode: '0700' 
 
 - name: (INSTALL) Run k3s install script
-  command: sh /tmp/k3s_install.sh
+  command: sh /tmp/k3s_install.sh -s - --tls-san {{ cert_path }}/{{ domain_name }} --write-kubeconfig-mode 644
   register: k3s_install_result
   failed_when: k3s_install_result.rc != 0
-
 
 - name: (INSTALL) Verify service status
   systemd:
@@ -33,4 +31,3 @@
       - service_status.status.ActiveState == "active"
     fail_msg: "The service is not active!"
     success_msg: "The service is active and running correctly."
-    
