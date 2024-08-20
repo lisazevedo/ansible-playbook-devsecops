@@ -31,3 +31,11 @@
       - service_status.status.ActiveState == "active"
     fail_msg: "The service is not active!"
     success_msg: "The service is active and running correctly."
+
+- name: Set permissions for kubeconfig file
+  file:
+    path: /etc/rancher/k3s/k3s.yaml
+    owner: root
+    group: root
+    mode: '0600'
+  when: ansible_os_family == "Linux"
