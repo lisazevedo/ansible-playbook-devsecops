@@ -16,5 +16,4 @@
     state: absent
   loop:
     - "{{ domain_name }}.key"
-    - "{{ domain_name }}.csr"
     - "{{ domain_name }}.crt"

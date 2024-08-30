@@ -5,9 +5,14 @@
     path: /etc/hosts
     block: |
       {% for host in groups['dev'] %}
-      {{ hostvars[host]['ansible_host'] }} {{ host }}
+      {{ hostvars[host]['ansible_host'] }} {{ domain_name }}
       {% endfor %}
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
+
+- name: Create OpenSSL configuration file from template
+  template:
+    src: openssl.cnf.j2
+    dest: /tmp/openssl.cnf
 
 - name: Create a directory for certificates
   file:
@@ -15,14 +20,17 @@
     state: directory
     mode: '0700' 
 
-- name: (INSTALL) Generate TLS certificates - Private Key
-  command: openssl genrsa -out {{ cert_path }}/{{ domain_name }}.key 4096  # Stronger key size
+- name: (INSTALL) Generate Private Key
+  command: openssl genpkey -algorithm RSA -out {{ cert_path }}/{{ domain_name }}.key  -pkeyopt rsa_keygen_bits:2048
 
-- name: (INSTALL) Generate TLS certificates - Certificate Signing Request (CSR)
-  command: openssl req -new -key {{ cert_path }}/{{ domain_name }}.key -out {{ cert_path }}/{{ domain_name }}.csr -subj "/CN={{ domain_name }}"
+- name: (INSTALL) Generate SSL certificate with SANs
+  command: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -key {{ cert_path }}/{{ domain_name }}.key -out {{ cert_path }}/{{ domain_name }}.crt --config /tmp/openssl.cnf
 
-- name: (INSTALL) Generate TLS certificates - Self-Signed Certificate
-  command: openssl x509 -req -days 365 -in {{ cert_path }}/{{ domain_name }}.csr -signkey {{ cert_path }}/{{ domain_name }}.key -out {{ cert_path }}/{{ domain_name }}.crt
+
+- name: Clean up temporary files
+  file:
+    path: /tmp/openssl.cnf
+    state: absent
 
 - name: Set strict permissions on certificate files
   file:
@@ -30,5 +38,4 @@
     mode: '0600'
   loop:
     - "{{ domain_name }}.key"
-    - "{{ domain_name }}.csr"
     - "{{ domain_name }}.crt"

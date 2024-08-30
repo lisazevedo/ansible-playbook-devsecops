@@ -4,6 +4,8 @@
   vars:
     cert_path: "/tmp/certs"
     domain_name: "mylocaldomain.local" 
+    sans:
+      - "mylocaldomain.local" 
   roles:
     - hosts
     - k3s

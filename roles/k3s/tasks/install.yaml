@@ -15,7 +15,7 @@
     mode: '0700' 
 
 - name: (INSTALL) Run k3s install script
-  command: sh /tmp/k3s_install.sh -s - --tls-san {{ cert_path }}/{{ domain_name }} --write-kubeconfig-mode 644
+  command: sh /tmp/k3s_install.sh -s - --tls-san {{ cert_path }}/{{ domain_name }} --disable traefik --write-kubeconfig-mode 644
   register: k3s_install_result
   failed_when: k3s_install_result.rc != 0
 
@@ -39,3 +39,4 @@
     group: root
     mode: '0600'
   when: ansible_os_family == "Linux"
+
